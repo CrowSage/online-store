@@ -9,6 +9,7 @@ from .serializers import (
     CategorySerializer,
 )
 from django import http
+from django.db.models import Count
 
 
 # RETURN ALL PRODUCTS (OR CATERGORY WITH QUERY PARAM)
@@ -18,10 +19,13 @@ def product_list(request):
 
     category = request.GET.get("category")
 
+    # Getting all the products first
+    products = Product.objects.annotate(variant_count=Count("variants")).filter(
+        active=True, variant_count__gt=0
+    )
+
     if category:
-        products = Product.objects.filter(category__slug=category, active=True)
-    else:
-        products = Product.objects.filter(active=True)
+        products = products.filter(category__slug=category)
 
     serializer = ProductListSerializer(products, many=True)
     return Response(serializer.data)
