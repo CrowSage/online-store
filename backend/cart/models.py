@@ -1,3 +1,19 @@
 from django.db import models
+from django.contrib.auth.models import User
+from catalog.models import ProductVariant
 
-# Create your models here.
+
+# EACH USER CAN HAVE ONLY 1 CART
+class Cart(models.Model):
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="cart")
+
+
+# CART ITEM POINTS TO CART AND MULTIPLE CART ITEMS CAN POINT TO SAME CART
+class CartItem(models.Model):
+
+    variant = models.ForeignKey(
+        ProductVariant, on_delete=models.PROTECT, related_name="in_cart"
+    )
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="items")
+    quantity = models.IntegerField()
