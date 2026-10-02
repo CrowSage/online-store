@@ -9,11 +9,21 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ["id", "name", "slug"]
 
 
+# PRODUCT SERIALIZER TO USE WHEN RETURNING PRODUCT VARIANT IN CART
+class ProductBasicSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Product
+        fields = ["id", "name", "slug"]
+
+
 # FOR PRODUCT VARIANT MODEL
 class ProductVariantSerializer(serializers.ModelSerializer):
+    product = ProductBasicSerializer()
+
     class Meta:
         model = models.ProductVariant
-        fields = ["id", "name", "price", "in_stock"]
+        fields = ["id", "name", "price", "product", "in_stock"]
 
 
 # SERIALIZER FOR PRODUCT LIST

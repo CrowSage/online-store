@@ -8,6 +8,10 @@ class Cart(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="cart")
 
+    @property
+    def total(self):
+        return sum(item.variant.price * item.quantity for item in self.items.all())
+
 
 # CART ITEM POINTS TO CART AND MULTIPLE CART ITEMS CAN POINT TO SAME CART
 class CartItem(models.Model):
